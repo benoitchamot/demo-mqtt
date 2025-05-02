@@ -6,5 +6,5 @@ CREATE TABLE messages (
     tag TEXT,
     value TEXT,
     units TEXT,
-    created_at DATETIME
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

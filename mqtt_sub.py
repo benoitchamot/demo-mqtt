@@ -2,6 +2,8 @@
 import logging
 import random
 import json
+import sqlite3
+import datetime as dt
 from paho.mqtt import client as mqtt_client
 
 # Broker settings
@@ -10,7 +12,7 @@ port = 1883
 
 
 # Topics
-topics = ['test']
+topics = ['test', 'publisher/test']
 
 # Set up logging
 logging.basicConfig(
@@ -19,6 +21,28 @@ logging.basicConfig(
         format='%(asctime)s - %(message)s',
         level=logging.INFO
         )
+
+def write_to_db(msg_topic, msg_json):
+    # Connect to database
+    con = sqlite3.connect("mqtt.db")
+    cur = con.cursor()
+
+    # Write to database
+    table = "messages"
+    query = f"""INSERT INTO {table} (timestamp, topic, tag, value, units)
+    VALUES
+        ('{msg_json['timestamp']}',
+         '{msg_topic}',
+         '{msg_json['tag']}',
+         '{msg_json['value']}',
+         '{msg_json['units']}'
+        );
+    """
+
+    cur.execute(query)
+
+    con.commit()
+    con.close()
 
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
@@ -66,8 +90,8 @@ def connect_mqtt() -> mqtt_client:
         else:
             # For any other topic, process the message
             # (not implemented yet)
-            # TODO: process_message(msg_topic, msg_json)
-            pass
+            print("message received on", msg_topic)
+            write_to_db(msg_topic, msg_json)
 
     # Create a persistent client
     client_id = f'subscribe-{random.randint(0, 100)}'

@@ -15,7 +15,7 @@ def create_payload():
             "timestamp": current_timestamp(),
             "tag": "examples/tag0",
             "value": 42,
-            "units": ""
+            "units": "magic"
             }
 
     return json.dumps(data_dict)
@@ -23,7 +23,7 @@ def create_payload():
 client = mqtt.Client()
 client.connect(broker, port, 60)
 
-topic = "test"
+topic = "publisher/test"
 payload = create_payload()
 qos = 0
 retain = False
