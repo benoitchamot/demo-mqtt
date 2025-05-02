@@ -6,6 +6,7 @@ More information: https://mosquitto.org/download/
 ```bash
 # Install
 sudo apt install mosquitto
+sudo apt install mosquitto-clients
 ``` 
 
 Start and enable on boot:
@@ -20,10 +21,21 @@ sudo systemctl status mosquitto
 # sudo systemctl enable mosquitto
 ```
 
+### Configuration
+Read more: https://mosquitto.org/man/mosquitto-conf-5.html
+
 - Config file: `/etc/mosquitto/mosquitto.conf`
 - Log files: `/var/log/mosquitto/mosquitto.log`
 
+## Basic setup
+Start the subscriber client:
 
+```bash
+python3 mqtt_sub.py
+```
 
+Send the test message
 
-
+```bash
+./mqtt_test_sub.sh
+```
