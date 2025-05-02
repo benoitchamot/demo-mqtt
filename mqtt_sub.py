@@ -55,12 +55,19 @@ def connect_mqtt() -> mqtt_client:
 
         # Print the message as is
         print(f"Raw: {msg}")
-        
-        # Get the message payload
+       
+        # Get the message topic and payload
+        msg_topic = msg.topic
         msg_json = json.loads(msg.payload)
-        msg_items = msg_json["items"]
-
-        print(f"JSON: {msg_json}")
+        
+        if msg_topic == 'test':
+            # For the test topic, simply print the message
+            print(f"JSON: {msg_json}")
+        else:
+            # For any other topic, process the message
+            # (not implemented yet)
+            # TODO: process_message(msg_topic, msg_json)
+            pass
 
     # Create a persistent client
     client_id = f'subscribe-{random.randint(0, 100)}'
