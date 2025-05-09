@@ -31,7 +31,13 @@ More information: https://mosquitto.org/download/
 # Install
 sudo apt install mosquitto
 sudo apt install mosquitto-clients
-``` 
+```
+
+For Arch Linux:
+```bash
+# Install
+sudo pacman -S mosquitto
+```
 
 Start and enable on boot:
 ```bash
