@@ -57,6 +57,17 @@ Read more: https://mosquitto.org/man/mosquitto-conf-5.html
 - Config file: `/etc/mosquitto/mosquitto.conf`
 - Log files: `/var/log/mosquitto/mosquitto.log`
 
+Extended configuration
+
+```
+# Logging configuration
+log_dest file /var/log/mosquitto/mosquitto.log
+log_type all
+log_timestamp true
+connection_messages true
+```
+
+
 ## Basic setup
 Start the subscriber client:
 
