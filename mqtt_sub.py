@@ -3,13 +3,15 @@ import logging
 import random
 import json
 import sqlite3
-import datetime as dt
+import time
 from paho.mqtt import client as mqtt_client
 
 # Broker settings
 broker = 'localhost'
 port = 1883
 
+# Client settings
+QoS = 2
 
 # Topics
 topics = ['test', 'publisher/test']
@@ -17,10 +19,11 @@ topics = ['test', 'publisher/test']
 # Set up logging
 logging.basicConfig(
         filename='logs/sub.log',
-        filemode = 'a',
+        filemode='a',
         format='%(asctime)s - %(message)s',
         level=logging.INFO
         )
+
 
 def write_to_db(msg_topic, msg_json):
     # Connect to database
@@ -44,6 +47,7 @@ def write_to_db(msg_topic, msg_json):
     con.commit()
     con.close()
 
+
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         """
@@ -52,7 +56,7 @@ def connect_mqtt() -> mqtt_client:
 
         # Connect to all topics
         for topic in topics:
-            client.subscribe(topic)
+            client.subscribe(topic, qos=QoS)
 
     def on_disconnect(client, userdata, rc):
         """
@@ -79,11 +83,11 @@ def connect_mqtt() -> mqtt_client:
 
         # Print the message as is
         print(f"Raw: {msg}")
-       
+
         # Get the message topic and payload
         msg_topic = msg.topic
         msg_json = json.loads(msg.payload)
-        
+
         if msg_topic == 'test':
             # For the test topic, simply print the message
             print(f"JSON: {msg_json}")
@@ -93,8 +97,12 @@ def connect_mqtt() -> mqtt_client:
             print("message received on", msg_topic)
             write_to_db(msg_topic, msg_json)
 
+            # TODO: remove verbose
+            print(f"JSON: {msg_json}")
+
     # Create a persistent client
-    client_id = f'subscribe-{random.randint(0, 100)}'
+    # client_id = f'subscribe-{random.randint(0, 100)}'
+    client_id = f"sub-client-qos{QoS}"
     client = mqtt_client.Client(client_id, clean_session=False)
 
     # Assign callbacks
@@ -111,6 +119,7 @@ def connect_mqtt() -> mqtt_client:
 def run():
     client = connect_mqtt()
     client.loop_forever()
+
 
 if __name__ == '__main__':
     run()
